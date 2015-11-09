@@ -8,6 +8,20 @@ func TestVersion(t *testing.T) {
 	println("Testing version: ", VERSION)
 }
 
+func TestMakeRequest(t *testing.T) {
+
+    body, err := MakeRequest("https://www.citibikenyc.com/stations/json")
+    if (err != nil) {
+         t.Fatalf("MakeRequest failed")  
+    }
+    
+    s, err := ParseStations(body)
+    if (len(s.StationBeanList) < 1) {
+         t.Fatalf("it looks like your api call failed")  
+    }
+
+}
+
 func TestParsing(t *testing.T) {
     http_body := `
         {
@@ -63,5 +77,6 @@ func TestParsing(t *testing.T) {
     if(station.Id != 72){
         t.Fatalf("station.id parsed incorrectly")
     }
-    
 }
+
+

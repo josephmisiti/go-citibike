@@ -3,8 +3,8 @@ package citibike
 import(
     "encoding/json"
     "fmt"
-    // "net/http"
-    // "io/ioutil"
+    "net/http"
+    "io/ioutil"
     // "os"
     // "runtime"
 )
@@ -40,6 +40,37 @@ type StationsResponse struct {
     ExecutionTime string `json:"executionTime"`
     StationBeanList []Station `json:"stationBeanList"`
 }
+
+type API struct {
+
+}
+
+func (r API) GetStations() (*StationsResponse,error) {
+
+    body, err := MakeRequest("https://www.citibikenyc.com/stations/json")
+    if (err != nil) {
+        return nil, err
+    }
+    s, err := ParseStations(body)
+    return  s, err
+}
+
+
+func MakeRequest(url string) ([]byte, error) {
+    
+    res, err := http.Get(url)
+    if err != nil {
+        return nil, err
+    }
+
+    body, err := ioutil.ReadAll(res.Body)
+    if err != nil {
+        return nil, err
+    }
+    
+    return []byte(body), err
+}
+
 
 func ParseStations(body []byte) (*StationsResponse, error) {
     var s = new(StationsResponse)
